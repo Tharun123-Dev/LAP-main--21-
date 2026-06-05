@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Phone, MapPin, CreditCard, ArrowRight, ArrowLeft, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -299,10 +299,7 @@ export const Register = () => {
       </form>
 
       <div className="text-center text-xs font-semibold text-slate-500">
-        Already have an account?{' '}
-        <Link to="/login" className="text-primary-500 hover:underline">
-          Sign In
-        </Link>
+        Frontend preview mode. Signup opens the affiliate dashboard.
       </div>
     </div>
   );

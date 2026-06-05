@@ -81,11 +81,11 @@ export const ForgotPassword = () => {
 
       <div className="text-center">
         <Link 
-          to="/auth/login" 
+          to="/dashboard" 
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Back to Login
+          Back to Dashboard
         </Link>
       </div>
     </div>

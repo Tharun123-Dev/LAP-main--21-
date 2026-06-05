@@ -49,7 +49,7 @@ export default function AffiliateAuthShell({ children }) {
       <section className="flex min-h-screen items-center justify-center bg-slate-50 p-4 text-slate-950 sm:p-6 lg:p-10">
         <div className="w-full max-w-xl">
           <div className="mb-6 flex items-center justify-between lg:hidden">
-            <Link to="/login" className="text-sm font-bold text-slate-500">Back to login</Link>
+            <Link to="/dashboard" className="text-sm font-bold text-slate-500">Back to dashboard</Link>
             <span className="rounded-xl bg-primary-600 px-3 py-1.5 text-xs font-black text-white">Affiliate</span>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60 sm:p-8">

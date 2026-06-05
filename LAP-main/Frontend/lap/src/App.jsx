@@ -93,7 +93,6 @@ export default function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Navigate to="/dashboard" replace />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/register" element={<AffiliateProviders><CustomerRegister /></AffiliateProviders>} />
         <Route path="/affiliate/register" element={<AffiliateProviders><AffiliateAuthShell><AffiliateRegister /></AffiliateAuthShell></AffiliateProviders>} />
@@ -133,6 +132,7 @@ export default function App() {
           <Route path="affiliate/settings" element={withAffiliateAccess(<AffiliateSettings />)} />
           <Route path="affiliate/preferences" element={withAffiliateAccess(<AffiliatePreferences />)} />
         </Route>
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </>
   )
