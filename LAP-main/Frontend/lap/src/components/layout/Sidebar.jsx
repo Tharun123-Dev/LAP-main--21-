@@ -82,23 +82,7 @@ export default function Sidebar({ open, onClose }) {
   const role = auth.role || 'employee'
   const user = auth.user
 
-  const permissions = auth.permissions || []
-
-// Show ALL sidebar menus for dummy admin
-const canSee = (item) => {
-  if (
-    auth.role === 'Super Admin' ||
-    auth.name === 'Admin' ||
-    permissions.includes('*')
-  ) {
-    return true
-  }
-
-  if (item.always) return true
-  if (!item.codes || item.codes.length === 0) return true
-
-  return item.codes.some((code) => permissions.includes(code))
-}
+  const canSee = () => true
 
   const items = NAV_ITEMS
     .filter(canSee)
