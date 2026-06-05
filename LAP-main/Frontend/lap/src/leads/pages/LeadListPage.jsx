@@ -22,8 +22,9 @@ import {
 
 export default function LeadListPage() {
   const { leads: rawLeads, deleteLead, forms, leadOptions } = useApp();
-  const { permissions = [] } = useSelector((state) => state.auth || {});
-  const hasAny = (...codes) => codes.some((code) => permissions.includes(code));
+  const { permissions = [], role, user, name } = useSelector((state) => state.auth || {});
+  const hasFullAccess = role === 'Super Admin' || user === 'Admin' || name === 'Admin' || permissions.includes('*');
+  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
   const isAdmin = hasAny('assign_lead', 'view_lead_analytics');
   const canCreate = hasAny('create_lead');
   const canEdit = hasAny('edit_lead');

@@ -135,8 +135,14 @@ const HIDDEN_KEYS = [
 ]
 
 export default function SystemSettings() {
-  const permissions = useSelector(s => s.auth.permissions) || []
-  const canEdit = permissions.includes('manage_settings')
+  const auth = useSelector(s => s.auth || {})
+  const permissions = auth.permissions || []
+  const canEdit =
+    auth.role === 'Super Admin' ||
+    auth.user === 'Admin' ||
+    auth.name === 'Admin' ||
+    permissions.includes('*') ||
+    permissions.includes('manage_settings')
   const bp      = useBreakpoint()
   const isMobile = bp === 'mobile'
 

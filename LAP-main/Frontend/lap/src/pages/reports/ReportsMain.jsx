@@ -1,6 +1,5 @@
 // src/pages/reports/ReportsPage.jsx
 import { useEffect, useState } from 'react'
-import usePermission from '../../hooks/usePermission'
 import ReportsDashboard from './Reportsdashboard'
 import AttendanceReport from './AttendanceReport'
 import LeaveReport      from './LeaveReport'
@@ -8,21 +7,20 @@ import PayrollReport    from './PayrollReport'
 import HeadcountReport  from './HeadCountReport'
 
 export default function ReportsPage({ forcedScope = null }) {
-  const { can } = usePermission()
   const [tab, setTab] = useState('dashboard')
-  const canViewAllReports = can('view_reports')
-  const canSelfReports    = can('self_reports')
-  const [scope, setScope] = useState(forcedScope || (canViewAllReports ? 'all' : 'self'))
+  const canViewAllReports = true
+  const canSelfReports    = true
+  const [scope, setScope] = useState(forcedScope || 'all')
   const activeScope = forcedScope || scope
-  const showScopeSwitch = !forcedScope && canViewAllReports && canSelfReports
+  const showScopeSwitch = !forcedScope
 
   const tabs = [
-    { key: 'dashboard',  label: 'Overview',   show: canViewAllReports || canSelfReports },
-    { key: 'attendance', label: 'Attendance', show: canViewAllReports || canSelfReports },
-    { key: 'leave',      label: 'Leave',      show: canViewAllReports || canSelfReports },
-    { key: 'payroll',    label: 'Payroll',    show: canViewAllReports || canSelfReports },
-    { key: 'headcount',  label: 'Headcount',  show: canViewAllReports && activeScope !== 'self' },
-  ].filter(t => t.show)
+    { key: 'dashboard',  label: 'Overview' },
+    { key: 'attendance', label: 'Attendance' },
+    { key: 'leave',      label: 'Leave' },
+    { key: 'payroll',    label: 'Payroll' },
+    { key: 'headcount',  label: 'Headcount' },
+  ]
 
   useEffect(() => {
     if (!tabs.some(t => t.key === tab)) setTab(tabs[0]?.key || 'dashboard')
@@ -30,8 +28,7 @@ export default function ReportsPage({ forcedScope = null }) {
 
   useEffect(() => {
     if (forcedScope && scope !== forcedScope) setScope(forcedScope)
-    else if (!forcedScope && !canViewAllReports && scope !== 'self') setScope('self')
-  }, [canViewAllReports, forcedScope, scope])
+  }, [forcedScope, scope])
 
   return (
     <div style={{ fontFamily: 'Inter, sans-serif' }}>

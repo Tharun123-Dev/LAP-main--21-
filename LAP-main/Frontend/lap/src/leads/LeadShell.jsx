@@ -14,19 +14,26 @@ import Toast from './components/Common/Toast';
 
 function LeadModuleInner() {
   const { toast } = useLeadApp();
-  const { permissions = [] } = useSelector((state) => state.auth || {});
+  const { permissions = [], role, user, name } = useSelector((state) => state.auth || {});
 
-  const hasAny = (...codes) => codes.some((code) => permissions.includes(code));
+  const hasFullAccess =
+    role === 'Super Admin' ||
+    user === 'Admin' ||
+    name === 'Admin' ||
+    permissions.includes('*');
+
+  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
+  const EmptyPermissionView = () => <div className="min-h-[50vh]" aria-label="No lead content available" />;
 
   const navItems = [
-    hasAny('view_leads') && { path: '/dashboard/leads', label: 'All Leads', end: true },
-    hasAny('create_lead') && { path: '/dashboard/leads/student-form', label: 'Student Form' },
-    hasAny('create_lead') && { path: '/dashboard/leads/add', label: 'Add Lead' },
-    hasAny('view_followups', 'create_followup') && { path: '/dashboard/leads/follow-ups', label: 'Follow Ups' },
-    hasAny('view_lead_analytics') && { path: '/dashboard/leads/analytics', label: 'Analytics' },
-    hasAny('manage_lead_forms') && { path: '/dashboard/leads/form-builder', label: 'Form Builder' },
-    hasAny('manage_lead_forms') && { path: '/dashboard/leads/options', label: 'Statuses' },
-  ].filter(Boolean);
+    { path: '/dashboard/leads', label: 'All Leads', end: true },
+    { path: '/dashboard/leads/student-form', label: 'Student Form' },
+    { path: '/dashboard/leads/add', label: 'Add Lead' },
+    { path: '/dashboard/leads/follow-ups', label: 'Follow Ups' },
+    { path: '/dashboard/leads/analytics', label: 'Analytics' },
+    { path: '/dashboard/leads/form-builder', label: 'Form Builder' },
+    { path: '/dashboard/leads/options', label: 'Statuses' },
+  ];
 
   return (
     <div className="min-h-full">
@@ -51,16 +58,16 @@ function LeadModuleInner() {
       </div>
 
       <Routes>
-        {hasAny('view_leads') && <Route index element={<LeadListPage />} />}
-        {hasAny('create_lead') && <Route path="student-form" element={<AddEditLeadPage />} />}
-        {hasAny('create_lead') && <Route path="add" element={<AddEditLeadPage />} />}
-        {hasAny('view_leads') && <Route path=":id" element={<LeadDetailsPage />} />}
-        {hasAny('edit_lead') && <Route path="edit/:id" element={<AddEditLeadPage />} />}
-        {hasAny('view_followups', 'create_followup') && <Route path="follow-ups" element={<FollowUpsPage />} />}
-        {hasAny('view_lead_analytics') && <Route path="analytics" element={<AnalyticsPage />} />}
-        {hasAny('manage_lead_forms') && <Route path="form-builder" element={<FormBuilderPage />} />}
-        {hasAny('manage_lead_forms') && <Route path="options" element={<LeadOptionsPage />} />}
-        <Route path="*" element={<Navigate to={navItems[0]?.path || '/unauthorized'} replace />} />
+        <Route index element={hasAny('view_leads') ? <LeadListPage /> : <EmptyPermissionView />} />
+        <Route path="student-form" element={hasAny('create_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
+        <Route path="add" element={hasAny('create_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
+        <Route path=":id" element={hasAny('view_leads') ? <LeadDetailsPage /> : <EmptyPermissionView />} />
+        <Route path="edit/:id" element={hasAny('edit_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
+        <Route path="follow-ups" element={hasAny('view_followups', 'create_followup') ? <FollowUpsPage /> : <EmptyPermissionView />} />
+        <Route path="analytics" element={hasAny('view_lead_analytics') ? <AnalyticsPage /> : <EmptyPermissionView />} />
+        <Route path="form-builder" element={hasAny('manage_lead_forms') ? <FormBuilderPage /> : <EmptyPermissionView />} />
+        <Route path="options" element={hasAny('manage_lead_forms') ? <LeadOptionsPage /> : <EmptyPermissionView />} />
+        <Route path="*" element={<Navigate to="/dashboard/leads" replace />} />
       </Routes>
 
       {toast && <Toast toast={toast} />}

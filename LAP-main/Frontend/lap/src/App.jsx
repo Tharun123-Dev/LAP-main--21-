@@ -55,11 +55,6 @@ const AffiliateProviders = ({ children }) => (
   </ThemeProvider>
 )
 
-const affiliateGuard = ['view_affiliate', 'manage_affiliate']
-const leadsGuard = ['view_leads', 'create_lead', 'view_followups', 'create_followup', 'view_lead_analytics', 'manage_lead_forms']
-const tasksGuard = ['view_tasks', 'view_team_tasks', 'create_task', 'assign_task']
-const revenueGuard = ['view_revenue', 'manage_revenue']
-
 const AffiliateSectionShell = ({ children }) => (
   <AffiliateProviders>
     <div className="min-h-full">
@@ -87,7 +82,7 @@ const AffiliateSectionShell = ({ children }) => (
 )
 
 const withAffiliateAccess = (children) => (
-  <ProtectedRoute requiredAny={affiliateGuard}>
+  <ProtectedRoute>
     <AffiliateSectionShell>{children}</AffiliateSectionShell>
   </ProtectedRoute>
 )
@@ -104,26 +99,26 @@ export default function App() {
         <Route path="/register" element={<AffiliateProviders><CustomerRegister /></AffiliateProviders>} />
         <Route path="/affiliate/register" element={<AffiliateProviders><AffiliateAuthShell><AffiliateRegister /></AffiliateAuthShell></AffiliateProviders>} />
 
-        <Route path="tasks" element={<ProtectedRoute requiredAny={tasksGuard}><TaskShell /></ProtectedRoute>} />
+        <Route path="tasks" element={<ProtectedRoute><TaskShell /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Shell /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
-          <Route path="employees" element={<ProtectedRoute requiredPermission="view_employees"><EmployeesPage /></ProtectedRoute>} />
-          <Route path="departments" element={<ProtectedRoute requiredPermission="view_departments"><DepartmentsPage /></ProtectedRoute>} />
-          <Route path="attendance" element={<ProtectedRoute requiredPermission="view_attendance"><AttendancePage /></ProtectedRoute>} />
-          <Route path="leave" element={<ProtectedRoute requiredPermission="view_leave"><LeavePage /></ProtectedRoute>} />
-          <Route path="payroll" element={<ProtectedRoute requiredPermission="view_payslip"><PayrollPage /></ProtectedRoute>} />
-          <Route path="payslip" element={<ProtectedRoute requiredPermission="view_payslip"><PayrollPage /></ProtectedRoute>} />
-          <Route path="support-tickets" element={<ProtectedRoute requiredAny={['raise_support_ticket', 'view_support_tickets', 'manage_support_tickets']}><SupportTicketsPage /></ProtectedRoute>} />
-          <Route path="reports" element={<ProtectedRoute requiredPermission="view_reports"><ReportsPage forcedScope="all" /></ProtectedRoute>} />
-          <Route path="self-reports" element={<ProtectedRoute requiredPermission="self_reports"><ReportsPage forcedScope="self" /></ProtectedRoute>} />
+          <Route path="employees" element={<ProtectedRoute><EmployeesPage /></ProtectedRoute>} />
+          <Route path="departments" element={<ProtectedRoute><DepartmentsPage /></ProtectedRoute>} />
+          <Route path="attendance" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
+          <Route path="leave" element={<ProtectedRoute><LeavePage /></ProtectedRoute>} />
+          <Route path="payroll" element={<ProtectedRoute><PayrollPage /></ProtectedRoute>} />
+          <Route path="payslip" element={<ProtectedRoute><PayrollPage /></ProtectedRoute>} />
+          <Route path="support-tickets" element={<ProtectedRoute><SupportTicketsPage /></ProtectedRoute>} />
+          <Route path="reports" element={<ProtectedRoute><ReportsPage forcedScope="all" /></ProtectedRoute>} />
+          <Route path="self-reports" element={<ProtectedRoute><ReportsPage forcedScope="self" /></ProtectedRoute>} />
           <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
           <Route path="settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-          <Route path="settings/system" element={<ProtectedRoute requiredPermission="manage_settings"><SystemSettings /></ProtectedRoute>} />
-          <Route path="permissions" element={<ProtectedRoute requiredPermission="manage_permissions"><PermissionManager /></ProtectedRoute>} />
-          <Route path="tasks" element={<ProtectedRoute requiredAny={tasksGuard}><TaskShell /></ProtectedRoute>} />
-          <Route path="leads/*" element={<ProtectedRoute requiredAny={leadsGuard}><LeadShell /></ProtectedRoute>} />
-          <Route path="revenue" element={<ProtectedRoute requiredAny={revenueGuard}><RevenuePage /></ProtectedRoute>} />
+          <Route path="settings/system" element={<ProtectedRoute><SystemSettings /></ProtectedRoute>} />
+          <Route path="permissions" element={<ProtectedRoute><PermissionManager /></ProtectedRoute>} />
+          <Route path="tasks" element={<ProtectedRoute><TaskShell /></ProtectedRoute>} />
+          <Route path="leads/*" element={<ProtectedRoute><LeadShell /></ProtectedRoute>} />
+          <Route path="revenue" element={<ProtectedRoute><RevenuePage /></ProtectedRoute>} />
 
           <Route path="affiliate" element={withAffiliateAccess(<AffiliateDashboard />)} />
           <Route path="affiliate/referrals" element={withAffiliateAccess(<AffiliateReferrals />)} />

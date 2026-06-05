@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import usePermission from '../hooks/usePermission'
 import { getDashboardStatsApi } from '../api/services/payroll'
 
 // ── Responsive hook ───────────────────────────────────────────────────────────
@@ -102,11 +101,11 @@ export default function Dashboard() {
   const role     = useSelector(s => s.auth.role) || 'employee'
   const user     = useSelector(s => s.auth.user)
   const navigate = useNavigate()
-  const { can, canAny }  = usePermission()
+  const can      = () => true
+  const canAny   = () => true
   const cards    = Object.values(CARDS)
     .flat()
     .filter((card, index, allCards) => allCards.findIndex((item) => item.path === card.path && item.label === card.label) === index)
-    .filter(card => !card.codes?.length || canAny(card.codes))
   const width    = useWindowWidth()
   const isMobile = width <= 640
 

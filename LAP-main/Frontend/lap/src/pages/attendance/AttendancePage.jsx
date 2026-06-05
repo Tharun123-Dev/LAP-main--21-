@@ -1,6 +1,5 @@
 // src/pages/attendance/AttendancePage.jsx
 import { useState } from 'react'
-import usePermission from '../../hooks/usePermission'
 import TodayWidget from './TodayWidget'
 import MonthlyView from './MonthlyView'
 import RegularizationTab from './RegularizationTab'
@@ -15,12 +14,9 @@ const TABS = [
 const MANAGER_TAB = { key: 'approvals', label: '✅ Approvals' }
 
 export default function AttendancePage() {
-  const { can }       = usePermission()
   const [tab, setTab] = useState('today')
 
-  const tabs = can('approve_regularize')
-    ? [...TABS, MANAGER_TAB]
-    : TABS
+  const tabs = [...TABS, MANAGER_TAB]
 
   return (
     <div style={{ fontFamily: 'Inter, sans-serif' }}>

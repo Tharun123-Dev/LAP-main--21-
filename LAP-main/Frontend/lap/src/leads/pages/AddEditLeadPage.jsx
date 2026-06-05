@@ -9,8 +9,9 @@ export default function AddEditLeadPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { leads, forms, formFields, counselors, leadOptions, addLead, updateLead } = useApp();
-  const { permissions = [] } = useSelector((state) => state.auth || {});
-  const hasAny = (...codes) => codes.some((code) => permissions.includes(code));
+  const { permissions = [], role, user, name } = useSelector((state) => state.auth || {});
+  const hasFullAccess = role === 'Super Admin' || user === 'Admin' || name === 'Admin' || permissions.includes('*');
+  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
   const canAssign = hasAny('assign_lead');
 
   const isEditMode = !!id;

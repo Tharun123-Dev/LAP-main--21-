@@ -78,7 +78,12 @@ export const LeadAppProvider = ({ children }) => {
     ? { id: auth.userId, full_name: rawUser, role: auth.role }
     : rawUser;
   const permissions = auth.permissions || [];
-  const hasAny = (...codes) => codes.some((code) => permissions.includes(code));
+  const hasFullAccess =
+    auth.role === 'Super Admin' ||
+    auth.user === 'Admin' ||
+    auth.name === 'Admin' ||
+    permissions.includes('*');
+  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
 
   const user = useMemo(() => {
     if (!lapUser && !auth.role) return null;

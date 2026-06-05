@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { TaskProvider, useTasks } from './context/TaskContext';
 import Dashboard from './pages/Dashboard';
 import TaskList from './pages/TaskList';
@@ -15,7 +14,6 @@ import {
 } from 'lucide-react';
 
 function TaskAppContent() {
-  const { permissions = [] } = useSelector((state) => state.auth || {});
   const {
     darkMode, toggleDarkMode, activePage, setActivePage,
     currentUser, setCurrentUser, members, notifications,
@@ -25,18 +23,16 @@ function TaskAppContent() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [showDemoTools, setShowDemoTools] = useState(false);
 
-  const hasAny = (...codes) => codes.some((code) => permissions.includes(code));
-
   const unreadCount = notifications.filter(n => !n.read).length;
   const navItems = useMemo(() => ([
-    hasAny('view_tasks', 'view_team_tasks', 'assign_task') && { id: 'dashboard', label: 'Dashboard' },
-    hasAny('view_team_tasks', 'assign_task') && { id: 'tasks-list', label: 'Task List' },
-    hasAny('view_team_tasks', 'assign_task') && { id: 'kanban', label: 'Kanban' },
-    hasAny('view_team_tasks', 'assign_task') && { id: 'calendar', label: 'Calendar' },
-    hasAny('view_tasks', 'view_team_tasks', 'assign_task') && { id: 'my-tasks', label: 'My Tasks' },
-    hasAny('create_task', 'assign_task') && { id: 'create-task', label: 'Create Task' },
-    hasAny('view_tasks', 'view_team_tasks', 'assign_task') && { id: 'notifications', label: 'Notifications', badge: unreadCount },
-  ]).filter(Boolean), [permissions, unreadCount]);
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'tasks-list', label: 'Task List' },
+    { id: 'kanban', label: 'Kanban' },
+    { id: 'calendar', label: 'Calendar' },
+    { id: 'my-tasks', label: 'My Tasks' },
+    { id: 'create-task', label: 'Create Task' },
+    { id: 'notifications', label: 'Notifications', badge: unreadCount },
+  ]), [unreadCount]);
 
   useEffect(() => {
     if (!navItems.some((item) => item.id === activePage)) {

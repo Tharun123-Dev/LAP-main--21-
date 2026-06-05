@@ -6,12 +6,9 @@ import { NAV_ITEMS } from '../../config/navigation'
 export default function Topbar({ onMenuClick }) {
   const location = useLocation()
   const role = useSelector((s) => s.auth.role) || 'employee'
-  const permissions = useSelector((s) => s.auth.permissions) || []
   const user = useSelector((s) => s.auth.user)
 
-  const items = NAV_ITEMS.filter((item) => item.always || item.codes?.some((code) => permissions.includes(code)))
-
-  const title = items.find((item) => (
+  const title = NAV_ITEMS.find((item) => (
     item.path === '/dashboard'
       ? location.pathname === '/dashboard'
       : location.pathname.startsWith(item.path)
