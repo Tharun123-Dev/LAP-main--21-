@@ -291,7 +291,7 @@ const AffiliateInner = ({ children }) => {
 
   const handleLogout = () => {
     logout?.();
-    navigate('/login');
+    navigate('/dashboard');
   };
   const effectiveCollapsed = collapsed && !hoverExpanded;
 
@@ -336,10 +336,10 @@ const AffiliateInner = ({ children }) => {
             <button
               onClick={handleLogout}
               className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/15 hover:text-rose-100 ${effectiveCollapsed ? 'justify-center' : ''}`}
-              title={effectiveCollapsed ? 'Logout' : undefined}
+              title={effectiveCollapsed ? 'Reset Preview' : undefined}
             >
               <LogOut className="h-5 w-5" />
-              {!effectiveCollapsed && 'Logout'}
+              {!effectiveCollapsed && 'Reset Preview'}
             </button>
             <button
               onClick={() => setCollapsed((value) => !value)}

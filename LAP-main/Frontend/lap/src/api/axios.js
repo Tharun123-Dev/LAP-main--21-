@@ -49,7 +49,7 @@ api.interceptors.response.use(
         return api(original)
       } catch {
         localStorage.clear()
-        window.location.href = '/login'
+        window.location.href = '/dashboard'
         return Promise.reject(error)
       }
     }

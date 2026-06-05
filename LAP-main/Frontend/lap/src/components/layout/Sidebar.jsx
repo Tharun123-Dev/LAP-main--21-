@@ -102,7 +102,7 @@ export default function Sidebar({ open, onClose }) {
 
   const handleLogout = () => {
     store.dispatch(logout())
-    navigate('/login')
+    navigate('/dashboard')
   }
 
   return (
@@ -227,7 +227,7 @@ export default function Sidebar({ open, onClose }) {
           className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/15 hover:text-rose-100"
         >
           <LogOut className="h-5 w-5" />
-          Logout
+          Reset Preview
         </button>
       </div>
     </aside>
