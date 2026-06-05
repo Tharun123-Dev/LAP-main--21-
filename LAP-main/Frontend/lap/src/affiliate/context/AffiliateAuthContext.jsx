@@ -1,68 +1,52 @@
-// src/affiliate/context/AffiliateAuthContext.jsx
-import React, { createContext, useState, useEffect, useCallback } from 'react';
-import authService from '../services/authService';
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 
-export const AffiliateAuthContext = createContext();
+export const AffiliateAuthContext = createContext()
+
+const previewUser = {
+  id: 'preview-affiliate',
+  name: 'Frontend Preview',
+  email: 'preview@example.com',
+  referralCode: 'PREVIEW',
+}
 
 export const AffiliateAuthProvider = ({ children }) => {
-  const [affiliateUser, setAffiliateUser] = useState(null);
-  const [affiliateLoading, setAffiliateLoading] = useState(true);
+  const [affiliateUser, setAffiliateUser] = useState(previewUser)
+  const [affiliateLoading, setAffiliateLoading] = useState(true)
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        // Use LAP's access token — key is 'access'
-        const token = localStorage.getItem('access');
-        if (token) {
-          const profile = await authService.getCurrentUser();
-          setAffiliateUser(profile);
-          if (profile.referralCode) {
-            localStorage.setItem('affiliate_ref_code', profile.referralCode);
-          }
-        }
-      } catch (err) {
-        console.error('Affiliate profile load failed:', err);
-        setAffiliateUser(null);
-      } finally {
-        setAffiliateLoading(false);
-      }
-    };
-    init();
-  }, []);
+    localStorage.setItem('affiliate_ref_code', previewUser.referralCode)
+    setAffiliateLoading(false)
+  }, [])
 
   const updateProfile = useCallback(async (profileData) => {
-    const updated = await authService.updateProfile(profileData);
-    setAffiliateUser(updated);
-    return updated;
-  }, []);
+    const updated = { ...affiliateUser, ...profileData }
+    setAffiliateUser(updated)
+    return updated
+  }, [affiliateUser])
 
   const register = useCallback(async (registerData) => {
-    const created = await authService.register(registerData);
-    setAffiliateUser(created);
-    localStorage.setItem('affiliate_onboarded', 'true');
-    if (created?.referralCode) {
-      localStorage.setItem('affiliate_ref_code', created.referralCode);
+    const created = {
+      id: Date.now(),
+      ...registerData,
+      referralCode: 'PREVIEW',
     }
-    return created;
-  }, []);
+    setAffiliateUser(created)
+    localStorage.setItem('affiliate_onboarded', 'true')
+    localStorage.setItem('affiliate_ref_code', created.referralCode)
+    return created
+  }, [])
 
   const logout = useCallback(() => {
-    setAffiliateUser(null);
-    localStorage.removeItem('affiliate_onboarded');
-    localStorage.removeItem('affiliate_ref_code');
-  }, []);
+    setAffiliateUser(previewUser)
+  }, [])
 
-  const refreshProfile = useCallback(async () => {
-    const profile = await authService.getCurrentUser();
-    setAffiliateUser(profile);
-    return profile;
-  }, []);
+  const refreshProfile = useCallback(async () => affiliateUser, [affiliateUser])
 
   return (
     <AffiliateAuthContext.Provider
       value={{
         user: affiliateUser,
-        isAuthenticated: !!affiliateUser,
+        isAuthenticated: true,
         loading: affiliateLoading,
         register,
         logout,
@@ -72,5 +56,5 @@ export const AffiliateAuthProvider = ({ children }) => {
     >
       {children}
     </AffiliateAuthContext.Provider>
-  );
-};
+  )
+}

@@ -76,14 +76,8 @@ export const LeadAppProvider = ({ children }) => {
   const rawUser = auth.employee || auth.user || null;
   const lapUser = typeof rawUser === 'string'
     ? { id: auth.userId, full_name: rawUser, role: auth.role }
-    : rawUser;
-  const permissions = auth.permissions || [];
-  const hasFullAccess =
-    auth.role === 'Super Admin' ||
-    auth.user === 'Admin' ||
-    auth.name === 'Admin' ||
-    permissions.includes('*');
-  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
+    : rawUser || { id: 'preview-user', full_name: 'Frontend Preview', role: 'admin' };
+  const hasAny = () => true;
 
   const user = useMemo(() => {
     if (!lapUser && !auth.role) return null;
@@ -93,7 +87,7 @@ export const LeadAppProvider = ({ children }) => {
       email: lapUser?.email || '',
       role: hasAny('assign_lead', 'view_lead_analytics', 'manage_lead_forms') ? 'admin' : 'counselor',
     };
-  }, [auth.role, auth.user, lapUser, permissions]);
+  }, [auth.role, auth.user, lapUser]);
 
   const [leads, setLeads] = useState([]);
   const [followups, setFollowups] = useState([]);

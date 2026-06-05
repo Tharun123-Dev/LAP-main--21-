@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate, NavLink } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 
-import Login from './pages/Login'
 import Unauthorized from './pages/Unauthorized'
 import Shell from './components/layout/Shell'
 import Dashboard from './pages/Dashboard'
@@ -93,8 +92,8 @@ export default function App() {
       <AuthSync />
       <Toaster position="top-right" />
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<Navigate to="/dashboard" replace />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/register" element={<AffiliateProviders><CustomerRegister /></AffiliateProviders>} />
         <Route path="/affiliate/register" element={<AffiliateProviders><AffiliateAuthShell><AffiliateRegister /></AffiliateAuthShell></AffiliateProviders>} />

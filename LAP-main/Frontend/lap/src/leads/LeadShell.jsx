@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route, Navigate, NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { LeadAppProvider, useLeadApp } from './context/LeadAppContext';
 
 import LeadListPage from './pages/LeadListPage';
@@ -14,16 +13,7 @@ import Toast from './components/Common/Toast';
 
 function LeadModuleInner() {
   const { toast } = useLeadApp();
-  const { permissions = [], role, user, name } = useSelector((state) => state.auth || {});
-
-  const hasFullAccess =
-    role === 'Super Admin' ||
-    user === 'Admin' ||
-    name === 'Admin' ||
-    permissions.includes('*');
-
-  const hasAny = (...codes) => hasFullAccess || codes.some((code) => permissions.includes(code));
-  const EmptyPermissionView = () => <div className="min-h-[50vh]" aria-label="No lead content available" />;
+  const hasAny = () => true;
 
   const navItems = [
     { path: '/dashboard/leads', label: 'All Leads', end: true },
@@ -58,15 +48,15 @@ function LeadModuleInner() {
       </div>
 
       <Routes>
-        <Route index element={hasAny('view_leads') ? <LeadListPage /> : <EmptyPermissionView />} />
-        <Route path="student-form" element={hasAny('create_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
-        <Route path="add" element={hasAny('create_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
-        <Route path=":id" element={hasAny('view_leads') ? <LeadDetailsPage /> : <EmptyPermissionView />} />
-        <Route path="edit/:id" element={hasAny('edit_lead') ? <AddEditLeadPage /> : <EmptyPermissionView />} />
-        <Route path="follow-ups" element={hasAny('view_followups', 'create_followup') ? <FollowUpsPage /> : <EmptyPermissionView />} />
-        <Route path="analytics" element={hasAny('view_lead_analytics') ? <AnalyticsPage /> : <EmptyPermissionView />} />
-        <Route path="form-builder" element={hasAny('manage_lead_forms') ? <FormBuilderPage /> : <EmptyPermissionView />} />
-        <Route path="options" element={hasAny('manage_lead_forms') ? <LeadOptionsPage /> : <EmptyPermissionView />} />
+        <Route index element={hasAny('view_leads') && <LeadListPage />} />
+        <Route path="student-form" element={hasAny('create_lead') && <AddEditLeadPage />} />
+        <Route path="add" element={hasAny('create_lead') && <AddEditLeadPage />} />
+        <Route path=":id" element={hasAny('view_leads') && <LeadDetailsPage />} />
+        <Route path="edit/:id" element={hasAny('edit_lead') && <AddEditLeadPage />} />
+        <Route path="follow-ups" element={hasAny('view_followups', 'create_followup') && <FollowUpsPage />} />
+        <Route path="analytics" element={hasAny('view_lead_analytics') && <AnalyticsPage />} />
+        <Route path="form-builder" element={hasAny('manage_lead_forms') && <FormBuilderPage />} />
+        <Route path="options" element={hasAny('manage_lead_forms') && <LeadOptionsPage />} />
         <Route path="*" element={<Navigate to="/dashboard/leads" replace />} />
       </Routes>
 

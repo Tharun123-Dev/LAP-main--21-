@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, CreditCard, Sparkles, Check, ArrowRight, ArrowLeft, ShieldCheck, Globe, Star, AlertCircle } from 'lucide-react';
-import api from '../../services/api';
 import { useNotifications } from '../../hooks/useNotifications';
 import FormInput from '../../components/forms/FormInput';
 import Button from '../../components/buttons/Button';
@@ -14,7 +13,6 @@ const SUBSCRIPTION_PLANS = [
   { id: 'enterprise', name: 'Enterprise Plan', price: 4999, description: 'Ultimate power for corporations.', features: ['Unlimited Users', 'Real-time Analytics Custom APIs', 'Dedicated Success Manager', 'Uncapped Storage Space', 'Custom SLA / Security'] },
   { id: 'none', name: 'No Plan', price: 0, description: 'Register account now and subscribe later.', features: ['Free Account Registration', 'Zero Charges Today', 'Subscribe Later'] }
 ];
-const USE_API = import.meta.env.VITE_USE_AFFILIATE_API !== 'false';
 
 export const CustomerRegister = () => {
   const [searchParams] = useSearchParams();
@@ -91,22 +89,8 @@ export const CustomerRegister = () => {
       }
     }
 
-    if (!referralCode) {
-      addNotification('Registration requires a valid referral link code', 'error');
-      return;
-    }
-
     setLoading(true);
     try {
-      if (USE_API) {
-        await api.post('/affiliate/referrals/register-customer/', {
-          customer_name: customerName,
-          customer_email: customerEmail,
-          referral_code: referralCode,
-          product_name: selectedPlan.name,
-          purchase_amount: selectedPlan.price
-        });
-      }
       setSuccess(true);
       addNotification('Subscription configured successfully!', 'success');
     } catch (err) {
@@ -225,9 +209,9 @@ export const CustomerRegister = () => {
               <span>Referral Applied: Code <strong className="font-extrabold underline">{referralCode}</strong> is configured!</span>
             </div>
           ) : (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 text-xs font-bold rounded-2xl flex items-center gap-2 border border-rose-100 dark:border-rose-900/30">
-              <AlertCircle className="w-4.5 h-4.5 text-rose-500 flex-shrink-0" />
-              <span>No referral code found. Please use a valid referral link.</span>
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 text-xs font-bold rounded-2xl flex items-center gap-2 border border-indigo-100 dark:border-indigo-900/30">
+              <AlertCircle className="w-4.5 h-4.5 text-indigo-500 flex-shrink-0" />
+              <span>Frontend preview mode. Referral code can be connected later.</span>
             </div>
           )}
 
@@ -298,7 +282,6 @@ export const CustomerRegister = () => {
                 <Button
                   type="submit"
                   className="w-full py-4 shadow-lg shadow-primary-500/25 mt-4"
-                  disabled={!referralCode}
                   icon={ArrowRight}
                 >
                   Continue to Select Plan

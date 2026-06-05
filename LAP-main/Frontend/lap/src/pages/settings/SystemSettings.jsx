@@ -1,7 +1,6 @@
 // src/pages/settings/SystemSettings.jsx — FULL REPLACEMENT
 // No duplicates. Each setting shows exactly which modules it affects.
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import systemSettingsService from '../../api/services/systemsettings'
 
 // ── Responsive breakpoint hook ────────────────────────────────────────────────
@@ -135,14 +134,7 @@ const HIDDEN_KEYS = [
 ]
 
 export default function SystemSettings() {
-  const auth = useSelector(s => s.auth || {})
-  const permissions = auth.permissions || []
-  const canEdit =
-    auth.role === 'Super Admin' ||
-    auth.user === 'Admin' ||
-    auth.name === 'Admin' ||
-    permissions.includes('*') ||
-    permissions.includes('manage_settings')
+  const canEdit = true
   const bp      = useBreakpoint()
   const isMobile = bp === 'mobile'
 

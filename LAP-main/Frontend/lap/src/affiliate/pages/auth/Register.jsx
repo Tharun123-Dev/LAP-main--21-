@@ -98,7 +98,7 @@ export const Register = () => {
       });
       localStorage.setItem('affiliate_onboarded', 'true');
       addNotification('Affiliate signup completed successfully!', 'success');
-      navigate(nextPath || '/login', { replace: true });
+      navigate(nextPath || '/dashboard/affiliate', { replace: true });
     } catch (err) {
       addNotification(err.message || 'Registration failed. Please try again.', 'error');
     } finally {
