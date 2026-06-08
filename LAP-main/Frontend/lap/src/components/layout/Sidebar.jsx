@@ -18,9 +18,11 @@ import {
   WalletCards,
   X,
 } from 'lucide-react'
+import { useSelector } from 'react-redux'
 import { logout } from '../../store/authSlice'
 import { store } from '../../store'
 import { NAV_ITEMS } from '../../config/navigation'
+import usePermission from '../../hooks/usePermission'
 
 const iconFallback = (label) => label?.charAt(0)?.toUpperCase() || '?'
 const iconByLabel = {
@@ -72,17 +74,21 @@ function NavIcon({ item }) {
 export default function Sidebar({ open, onClose }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const [auth, setAuth] = useState(() => store.getState().auth || {})
+  const auth = useSelector((state) => state.auth || {})
+  const { canAny } = usePermission()
   const [expandedMenu, setExpandedMenu] = useState('')
 
   useEffect(() => {
-    return store.subscribe(() => setAuth(store.getState().auth || {}))
-  }, [])
+    const activeParent = NAV_ITEMS.find((item) => (
+      item.path !== '/dashboard' && location.pathname.startsWith(item.path)
+    ))
+    if (activeParent?.children?.length) setExpandedMenu(activeParent.path)
+  }, [location.pathname])
 
   const role = auth.role || 'employee'
   const user = auth.user
 
-  const canSee = () => true
+  const canSee = (item) => item.always || canAny(item.codes)
 
   const items = NAV_ITEMS
     .filter(canSee)
@@ -103,15 +109,17 @@ export default function Sidebar({ open, onClose }) {
   const handleLogout = () => {
     store.dispatch(logout())
     navigate('/dashboard')
+    onClose?.()
   }
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex w-[268px] flex-shrink-0 flex-col bg-slate-950 text-white shadow-2xl transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0 lg:shadow-none ${
+      className={`fixed inset-y-0 left-0 z-50 flex w-[min(286px,88vw)] flex-shrink-0 flex-col bg-slate-950 text-white shadow-2xl transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-[286px] lg:translate-x-0 lg:shadow-none ${
         open ? 'translate-x-0' : '-translate-x-full'
       }`}
+      aria-label="Main navigation"
     >
-      <div className="flex h-16 items-center justify-between border-b border-white/10 px-4">
+      <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-white/10 px-4">
         <button onClick={() => go('/dashboard')} className="flex min-w-0 items-center gap-3 text-left">
           <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-primary-600 to-emerald-500 text-lg font-black shadow-lg shadow-primary-500/20">
             L
@@ -126,7 +134,7 @@ export default function Sidebar({ open, onClose }) {
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4 custom-scrollbar">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-3 py-4 custom-scrollbar">
         {items.map((item) => {
           const active = item.path === '/dashboard'
             ? location.pathname === '/dashboard'
@@ -144,6 +152,7 @@ export default function Sidebar({ open, onClose }) {
                     : 'text-slate-300 hover:bg-white/10 hover:text-white'
                 }`}
                 aria-expanded={hasChildren ? submenuOpen : undefined}
+                aria-current={active ? 'page' : undefined}
               >
                 <NavIcon item={item} />
                 <span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -169,41 +178,12 @@ export default function Sidebar({ open, onClose }) {
                               ? 'bg-white text-slate-950'
                               : 'text-slate-400 hover:bg-white/10 hover:text-white'
                           }`}
+                          aria-current={childActive ? 'page' : undefined}
                         >
                           <span className="min-w-0 truncate">{child.label}</span>
                         </button>
                       )
                     })}
-                  </div>
-
-                  <div className="pointer-events-none fixed left-[268px] z-50 hidden w-72 pl-3 opacity-0 transition xl:group-hover:pointer-events-auto xl:group-hover:opacity-100 xl:group-focus-within:pointer-events-auto xl:group-focus-within:opacity-100">
-                    <div className="rounded-2xl border border-slate-800 bg-slate-950 p-2 shadow-2xl shadow-slate-950/30">
-                      <div className="px-3 py-2">
-                        <p className="text-xs font-black uppercase tracking-wide text-primary-300">{item.label}</p>
-                        <p className="mt-1 text-[11px] font-semibold text-slate-500">Open any section</p>
-                      </div>
-                      <div className="space-y-1">
-                        {item.children.map((child) => {
-                          const childActive = child.path === item.path
-                            ? location.pathname === child.path
-                            : location.pathname.startsWith(child.path)
-
-                          return (
-                            <button
-                              key={child.path}
-                              onClick={() => go(child.path)}
-                              className={`flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${
-                                childActive
-                                  ? 'bg-primary-600 text-white'
-                                  : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                              }`}
-                            >
-                              <span className="min-w-0 truncate">{child.label}</span>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
                   </div>
                 </>
               )}
@@ -212,7 +192,7 @@ export default function Sidebar({ open, onClose }) {
         })}
       </nav>
 
-      <div className="border-t border-white/10 p-3">
+      <div className="flex-shrink-0 border-t border-white/10 p-3">
         <div className="mb-3 flex min-w-0 items-center gap-3 rounded-xl bg-white/5 px-3 py-3">
           <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-black">
             {(user || role || 'U')?.charAt(0)?.toUpperCase()}
