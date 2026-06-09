@@ -1,8 +1,10 @@
 // src/api/axios.js
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8000/api'
+// const BASE_URL = 'http://localhost:8000/api'
 // const BASE_URL = ' https://lap-b9vi.onrender.com/api'
+const BASE_URL = 'http://100.121.237.45:8000/api'
+
 
 const api = axios.create({
   baseURL: BASE_URL,

@@ -15,7 +15,8 @@ export const downloadReportCsv = (type, params) => {
     Object.entries({ ...params, format: 'csv' }).filter(([, v]) => v !== undefined && v !== null && v !== '')
   )
   const query = new URLSearchParams(cleanParams).toString()
-  const url   = `http://localhost:8000/api/reports/${type}/?${query}`
+  // const url   = `http://localhost:8000/api/reports/${type}/?${query}`
+  const url = `http://100.121.237.45:8000/api/reports/${type}/?${query}`
 
   // const url   = `https://lap-b9vi.onrender.com/api/reports/${type}/?${query}`
   fetch(url, { headers: { Authorization: `Bearer ${token}` } })

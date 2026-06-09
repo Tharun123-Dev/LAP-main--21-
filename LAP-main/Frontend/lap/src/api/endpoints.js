@@ -4,8 +4,9 @@
 // Change:  Added HOLIDAY_DETAIL: (id) => `…/holidays/${id}/`
 //          (needed for PUT / DELETE on individual holidays)
 
-const BASE = 'http://localhost:8000/api'
+// const BASE = 'http://localhost:8000/api'
 // const BASE = 'https://lap-b9vi.onrender.com/api'
+const BASE_URL = 'http://100.121.237.45:8000/api'
 
 const ENDPOINTS = {
   AUTH: {
